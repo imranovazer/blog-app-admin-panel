@@ -2,17 +2,24 @@ import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import RoutesList from "./router/routes";
 import About from "./pages/About";
+import ProectedRoute from "./router/ProectedRoute";
+import Home from "./pages/Home";
+import Login from "./pages/Login";
 
-console.log(RoutesList);
 function App() {
   return (
     <>
-      {console.log(RoutesList)}
       <Routes>
-        {RoutesList.map((item, index) => (
-          <Route path={item.path} element={item.element} key={index} />
-        ))}
+          <Route   element={<ProectedRoute shouldAuth={true}/>}>
+              <Route path="/" element= {<Home/>} />
+              <Route path="about" element={<About/>} /> 
+          </Route>
+          <Route  element ={<ProectedRoute  shouldAuth={false}/>}>
+              <Route path="/login" element={<Login/>} />
+          </Route>
+          <Route path="/*" element={<h1>404</h1>}/>
       </Routes>
+    
     </>
   );
 }
