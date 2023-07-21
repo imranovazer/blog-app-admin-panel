@@ -39,6 +39,8 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
   const { setIsAuth } = React.useContext(AuthContex);
 
+  const [error, setError] = React.useState(null);
+
   const navigate = useNavigate();
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -53,12 +55,11 @@ export default function SignInSide() {
         email: data.get("email"),
         password: data.get("password"),
       });
-      localStorage.setItem("accessToken", res.data.data.accessJwtToken);
-      //   localStorage.setItem("refreshToken", res.data.data.refreshJwtToken);
+      localStorage.setItem("accessToken", true);
       setIsAuth(true);
       navigate("/");
     } catch (error) {
-      console.log(error);
+      setError(error?.response?.data?.message);
     }
   };
 
@@ -96,6 +97,7 @@ export default function SignInSide() {
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
+
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
@@ -125,7 +127,11 @@ export default function SignInSide() {
                 id="password"
                 autoComplete="current-password"
               />
-
+              {error && (
+                <Typography color={"red"} textAlign={"center"}>
+                  {error}
+                </Typography>
+              )}
               <Button
                 type="submit"
                 fullWidth
