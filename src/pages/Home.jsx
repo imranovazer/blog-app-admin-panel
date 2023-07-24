@@ -1,8 +1,7 @@
-import Loading from "../components/Loading";
 function Home() {
   return (
     <div>
-      <Loading />
+      <h1>Home</h1>
     </div>
   );
 }

@@ -13,6 +13,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import axiosInstance from "../axios";
 import { AuthContex } from "../contex/AuthContex";
 import { useNavigate } from "react-router-dom";
+import BlogBack from "../assets/blog.jpeg";
 
 function Copyright(props) {
   return (
@@ -73,8 +74,8 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            backgroundImage:
-              "url(https://source.unsplash.com/random?wallpapers)",
+            backgroundImage: `url(${BlogBack})`,
+            // "url(https://source.unsplash.com/random?wallpapers)",
             backgroundRepeat: "no-repeat",
             backgroundColor: (t) =>
               t.palette.mode === "light"

@@ -7,7 +7,7 @@ import uploadImg from "../../assets/cloud-upload-regular-240.png";
 
 const DropFileInput = ({ file, setFile }) => {
   const wrapperRef = useRef(null);
-
+  const [fileUrl, setFileUrl] = useState();
   // const [file, setFile] = useState();
   // console.log(file);
 
@@ -19,34 +19,45 @@ const DropFileInput = ({ file, setFile }) => {
 
   const onFileDrop = (e) => {
     const newFile = e.target.files[0];
-
+    setFileUrl(URL.createObjectURL(newFile));
     setFile(newFile);
   };
 
   const fileRemove = () => {
     setFile(null);
+    setFileUrl(null);
   };
 
   return (
     <>
       <div
         ref={wrapperRef}
-        className="drop-file-input "
+        className="drop-file-input overflow-hidden"
         onDragEnter={onDragEnter}
         onDragLeave={onDragLeave}
         onDrop={onDrop}
       >
         <div className="drop-file-input__label">
-          <img src={uploadImg} alt="" />
-          <p>Drag & Drop your files here</p>
+          {fileUrl ? (
+            <img
+              src={fileUrl}
+              style={{ width: "100%" }}
+              className="object-cover"
+            />
+          ) : (
+            <>
+              <img src={uploadImg} alt="preview" />
+              <p>Drag & Drop your files here</p>
+            </>
+          )}
         </div>
         <input type="file" value="" onChange={onFileDrop} />
       </div>
       {file ? (
-        <div className="drop-file-preview">
+        <div className="drop-file-preview w-full">
           <p className="drop-file-preview__title">Ready to upload</p>
           {
-            <div className="drop-file-preview__item">
+            <div className="drop-file-preview__item ">
               <img
                 src={
                   ImageConfig[file.type.split("/")[1]] || ImageConfig["default"]

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-
 import DropFileInput from "../../components/drop-file-input/DropFileInput";
 import axiosInstance from "../../axios";
 import Select from "@mui/joy/Select";
@@ -9,8 +8,14 @@ import Textarea from "@mui/joy/Textarea";
 import { Button } from "@mui/joy";
 import JoditEditor from "jodit-react";
 import AlertInvertedColors from "../../components/AlertInvertedColors";
+import { useParams } from "react-router-dom";
+import editBlogApi from "./api";
+import Loading from "../../components/Loading";
+import blogApi from "../Blogs/api";
 
-function CreatePost() {
+function EditPost() {
+  const [loading, setLoading] = useState(true);
+  const { id } = useParams();
   const [alert, setAlert] = useState();
   const [alertType, setAlertType] = useState();
   const [alertContent, setAlertContent] = useState();
@@ -19,18 +24,29 @@ function CreatePost() {
   const [date, setDate] = useState(null);
   const [languages, setLanguages] = useState([]);
   const [categoryInput, setCategoryInput] = useState();
-  const [locales, setLocales] = useState([
-    {
-      languageId: 2,
-      title: "",
-      description: "",
-      content: "",
-    },
-  ]);
-
+  const [locales, setLocales] = useState([]);
   const [categories, setCategories] = useState([]);
-
   const [activeLocale, setActiveLocale] = useState(locales[0]);
+
+  useEffect(() => {
+    const getData = async () => {
+      const res = await editBlogApi.getBlogById(id);
+      console.log(res);
+      const localesToset = res.locales.map((item) => ({
+        ...item,
+        languageId: item.language.id,
+      }));
+      setLocales(localesToset);
+      const fetchedCategories = res.categories.map((item) => item.name);
+      console.log(fetchedCategories);
+      setCategories(fetchedCategories);
+      setDate(res.date);
+      setActiveLocale(localesToset[0]);
+      setLoading(false);
+    };
+
+    getData();
+  }, []);
 
   const saveDataOnLangChange = () => {
     const clonedLocales = [...locales];
@@ -62,44 +78,20 @@ function CreatePost() {
 
     getLanguages();
   }, []);
-
+  const handleImageUpdate = async () => {};
   const handleSubmit = async () => {
     try {
       const dataToSend = saveDataOnLangChange();
-
-      const formdata = new FormData();
-      dataToSend.forEach((send, index) => {
-        formdata.append(`locales[${index}][languageId]`, send.languageId);
-        formdata.append(`locales[${index}][title]`, send.title);
-        formdata.append(`locales[${index}][content]`, send.content);
-        formdata.append(`locales[${index}][description]`, send.description);
-      });
-      categories.forEach((category, index) => {
-        formdata.append(`categories[${index}][name]`, category);
-      });
-      formdata.append("image", file);
-      formdata.append("date", date);
-      const res = await axiosInstance.post("/blog", formdata, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const categoryTosend = categories.map((item) => ({ name: item }));
+      const jsonToSend = {
+        locales: dataToSend,
+        categories: categoryTosend,
+        date: date,
+      };
+      const res = await axiosInstance.patch(`/blog/${id}`, jsonToSend);
       setAlertType(true);
-      setAlertContent("New blog created succesffully!");
+      setAlertContent("Blog updated successfully!");
       setAlert(true);
-      setLocales([
-        {
-          languageId: 2,
-          title: "",
-          description: "",
-          content: "",
-        },
-      ]);
-      setActiveLocale(locales[0]);
-
-      setFile(null);
-      setDate(null);
-      setCategories([]);
 
       console.log(res);
     } catch (error) {
@@ -136,7 +128,22 @@ function CreatePost() {
       }
     });
   };
+  const hadleImageUpdate = async () => {
+    try {
+      const data = new FormData();
 
+      data.append("image", file);
+      const res = await editBlogApi.editPhotoOfBlog(id, data);
+      setAlertType(true);
+      setAlertContent("Blog updated successfully!");
+      setAlert(true);
+    } catch (error) {
+      setAlertType(false);
+      setAlertContent("Unable to create blog please fill all data!");
+      setAlert(true);
+      console.log(error);
+    }
+  };
   const handleCategoryAdd = () => {
     if (categories.includes(categoryInput)) {
       return;
@@ -154,7 +161,9 @@ function CreatePost() {
   const handleSetActiveLocale = (locale) => {
     setActiveLocale(locale);
   };
-  return (
+  return loading ? (
+    <Loading />
+  ) : (
     <div className="container mx-auto flex flex-col gap-2">
       <AlertInvertedColors
         display={alert}
@@ -163,8 +172,10 @@ function CreatePost() {
         content={alertContent}
       />
       <div className="rounded-xl shadow-md bg-slate-200 p-3 flex justify-between gap-3">
-        <div className="w-1/2">
+        <div className="w-1/2 flex flex-col gap-3">
           <DropFileInput file={file} setFile={setFile} />
+
+          <Button onClick={hadleImageUpdate}>Update image </Button>
         </div>
         <div className="w-1/2 flex flex-col gap-4">
           <Select
@@ -185,7 +196,11 @@ function CreatePost() {
                 </Option>
               ))}
           </Select>
-          <Input type="date" onChange={(e) => setDate(e.target.value)} />
+          <Input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
           <div className="flex gap-3">
             <Input
               type="text"
@@ -261,11 +276,11 @@ function CreatePost() {
               handleInputChange("content", value);
             }}
           />
-          <Button onClick={handleSubmit}>Post</Button>
+          <Button onClick={handleSubmit}>Save changes</Button>
         </div>
       </div>
     </div>
   );
 }
 
-export default CreatePost;
+export default EditPost;

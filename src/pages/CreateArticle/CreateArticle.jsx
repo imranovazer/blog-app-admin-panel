@@ -10,7 +10,7 @@ import { Button } from "@mui/joy";
 import JoditEditor from "jodit-react";
 import AlertInvertedColors from "../../components/AlertInvertedColors";
 
-function CreatePost() {
+function CreateArticle() {
   const [alert, setAlert] = useState();
   const [alertType, setAlertType] = useState();
   const [alertContent, setAlertContent] = useState();
@@ -67,25 +67,30 @@ function CreatePost() {
     try {
       const dataToSend = saveDataOnLangChange();
 
-      const formdata = new FormData();
-      dataToSend.forEach((send, index) => {
-        formdata.append(`locales[${index}][languageId]`, send.languageId);
-        formdata.append(`locales[${index}][title]`, send.title);
-        formdata.append(`locales[${index}][content]`, send.content);
-        formdata.append(`locales[${index}][description]`, send.description);
-      });
-      categories.forEach((category, index) => {
-        formdata.append(`categories[${index}][name]`, category);
-      });
-      formdata.append("image", file);
-      formdata.append("date", date);
-      const res = await axiosInstance.post("/blog", formdata, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const formdata = {
+        locales: dataToSend,
+        file: "Azer",
+      };
+      //   const formdata = new FormData();
+      //   dataToSend.forEach((send, index) => {
+      //     formdata.append(`locales[${index}][languageId]`, send.languageId);
+      //     formdata.append(`locales[${index}][title]`, send.title);
+      //     formdata.append(`locales[${index}][content]`, send.content);
+      //     formdata.append(`locales[${index}][description]`, send.description);
+      //   });
+      //   categories.forEach((category, index) => {
+      //     formdata.append(`categories[${index}][name]`, category);
+      //   });
+      //   formdata.append("File", file);
+      //   formdata.append("date", date);
+      //   const res = await axiosInstance.post("/article", formdata, {
+      //     headers: {
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   });
+      const res = await axiosInstance.post("/article", formdata);
       setAlertType(true);
-      setAlertContent("New blog created succesffully!");
+      setAlertContent("New article created succesffully!");
       setAlert(true);
       setLocales([
         {
@@ -104,7 +109,7 @@ function CreatePost() {
       console.log(res);
     } catch (error) {
       setAlertType(false);
-      setAlertContent("Unable to create blog please fill all data!");
+      setAlertContent("Unable to create article please fill all data!");
       setAlert(true);
       console.log(error);
     }
@@ -268,4 +273,4 @@ function CreatePost() {
   );
 }
 
-export default CreatePost;
+export default CreateArticle;

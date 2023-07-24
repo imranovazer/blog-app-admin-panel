@@ -1,28 +1,32 @@
 import React, { useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
 import { useNavigate } from "react-router-dom";
-import blogApi from "./api";
-import { Table } from "@mui/joy";
-function Blogs() {
-  const [blogs, setBlogs] = useState([]);
 
+import { Table } from "@mui/joy";
+import articlesApi from "./api/inedx";
+function Articles() {
+  const [articles, setArticles] = useState([]);
+  console.log(articles);
   const navigate = useNavigate();
   const getData = async () => {
-    const res = await blogApi.getAll();
-    setBlogs(res);
+    const res = await articlesApi.getArticles();
+
+    setArticles(res);
   };
   useEffect(() => {
     getData();
   }, []);
 
   const handleDelete = async (id) => {
-    const res = await blogApi.deleteById(id);
+    const res = await articlesApi.deleteArticleById(id);
     getData();
   };
   return (
     <div className="container mx-auto flex flex-col gap-4">
-      <Button onClick={() => navigate("/create-blog")}>Create new blog</Button>
-      <h1 className="text-[32px] font-bold">Blogs</h1>
+      <Button onClick={() => navigate("/create-article")}>
+        Create new article
+      </Button>
+      <h1 className="text-[32px] font-bold">Articles</h1>
       <div className="rounded-xl shadow-lg bg-slate-100  p-3 ">
         <Table>
           <thead>
@@ -36,17 +40,17 @@ function Blogs() {
           </thead>
 
           <tbody>
-            {blogs.length > 0 ? (
-              blogs.map((blog) => (
-                <tr key={blog.id}>
-                  <td>{blog.id}</td>
-                  <td>{blog?.locales[0].title}</td>
-                  <td>{blog?.date}</td>
+            {articles.length > 0 ? (
+              articles.map((article) => (
+                <tr key={article.id}>
+                  <td>{article.id}</td>
+                  <td>{article?.locales[0].title}</td>
+                  <td>{article?.date}</td>
                   <td>
                     <Button
                       color="warning"
                       onClick={() => {
-                        navigate(`/blog/${blog.id}`);
+                        navigate(`/blog/${article.id}`);
                       }}
                     >
                       Edit
@@ -55,7 +59,7 @@ function Blogs() {
                   <td>
                     <Button
                       color="danger"
-                      onClick={() => handleDelete(blog.id)}
+                      onClick={() => handleDelete(article.id)}
                     >
                       Delete
                     </Button>
@@ -64,7 +68,7 @@ function Blogs() {
               ))
             ) : (
               <tr>
-                <th colSpan={5}>Blogs not found</th>
+                <th colSpan={5}>Articles not found</th>
               </tr>
             )}
           </tbody>
@@ -74,4 +78,4 @@ function Blogs() {
   );
 }
 
-export default Blogs;
+export default Articles;

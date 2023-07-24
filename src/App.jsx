@@ -1,13 +1,16 @@
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import RoutesList from "./router/routes";
-import About from "./pages/About";
 import ProectedRoute from "./router/ProectedRoute";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Layout from "./pages/Layout";
 import Blogs from "./pages/Blogs/Blogs";
 import CreatePost from "./pages/CreatePost/CreatePost";
+import EditPost from "./pages/EditPost/EditPost";
+import Articles from "./pages/Articles/Articles";
+import CreateArticle from "./pages/CreateArticle/CreateArticle";
+import Profile from "./pages/Profile/Profile";
 
 function App() {
   return (
@@ -17,8 +20,12 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
-            <Route path="/about" element={<About />} />
+
             <Route path="/create-blog" element={<CreatePost />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/blog/:id" element={<EditPost />} />
+            <Route path="/articles" element={<Articles />} />
+            <Route path="/create-article" element={<CreateArticle />} />
           </Route>
         </Route>
         <Route element={<ProectedRoute shouldAuth={false} />}>

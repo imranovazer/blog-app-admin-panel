@@ -94,15 +94,11 @@ export default function Layout() {
   };
   const handleLogOut = async () => {
     try {
-      localStorage.removeItem("accessToken");
+      localStorage.clear();
       const res = await axiosInstance.post("/auth/logout");
     } catch (error) {
       console.log(error);
     }
-
-    localStorage.removeItem("accessTokens");
-
-    localStorage.removeItem("refreshToken");
 
     setIsAuth(false);
   };
@@ -122,7 +118,7 @@ export default function Layout() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Persistent drawer
+            Admin panel
           </Typography>
           {isAuth && (
             <div>
