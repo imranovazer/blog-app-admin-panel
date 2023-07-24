@@ -40,7 +40,7 @@ function Articles() {
           </thead>
 
           <tbody>
-            {articles.length > 0 ? (
+            {articles?.length > 0 ? (
               articles.map((article) => (
                 <tr key={article.id}>
                   <td>{article.id}</td>

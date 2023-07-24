@@ -12,7 +12,8 @@ function Profile() {
   const [companyToEdit, setCompanyToEdit] = useState();
   const [skills, setSkills] = useState([]);
   const [createSkillModal, setCreateSkillModal] = useState(false);
-
+  const [skillToEdit, setSkillToEdit] = useState();
+  const [editSkillModal, setEditSkillModal] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [createCommpanyModal, setCreateCompanyModal] = useState(false);
   const [editCompanyModal, setEditCompanyModal] = useState(false);
@@ -73,7 +74,7 @@ function Profile() {
         </Button>
 
         <div className="grid gap-4 grid-cols-1  lg:grid-cols-3 xl:grid-cols-4">
-          {companies.length > 0 ? (
+          {companies?.length > 0 ? (
             companies.map((company, index) => (
               <div key={index} className="flex justify-center">
                 <CompanyCard
@@ -96,7 +97,7 @@ function Profile() {
       <div className=" bg-slate-200 rounded-lg  flex flex-col p-3 gap-4">
         <Button onClick={() => setCreateSkillModal(true)}>Add new skill</Button>
         <div className="grid gap-4 grid-cols-1  lg:grid-cols-3 xl:grid-cols-4">
-          {skills.length > 0 ? (
+          {skills?.length > 0 ? (
             skills.map((skill, index) => (
               <div key={index} className="flex justify-center">
                 <div className="w-[100%]  max-w-[330px]  bg-slate-950 rounded-lg flex flex-col p-3 gap-4 ">
@@ -107,7 +108,14 @@ function Profile() {
                     className="object-cover h-20 w-35"
                   />
                   <div className="flex justify-between">
-                    <Button>Edit</Button>
+                    <Button
+                      onClick={() => {
+                        setSkillToEdit(skill);
+                        setEditSkillModal(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
                     <Button
                       color="danger"
                       onClick={() => handleSkillDelete(skill.id)}
@@ -133,7 +141,16 @@ function Profile() {
         setCompanyToEdit={setCompanyToEdit}
         fetchCompanies={fetchCompanies}
       />
-      <EditSkillModal />
+      <EditSkillModal
+        skillToEdit={skillToEdit}
+        open={editSkillModal}
+        setOpen={setEditSkillModal}
+        setAlertContent={setAlertContent}
+        setAlertDisplay={setAlertDisplay}
+        setAlertType={setAlertType}
+        setSkillToEdit={setSkillToEdit}
+        fetchSkills={fetchSkills}
+      />
 
       <CreateSkillModal
         open={createSkillModal}

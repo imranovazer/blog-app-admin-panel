@@ -36,7 +36,7 @@ function Blogs() {
           </thead>
 
           <tbody>
-            {blogs.length > 0 ? (
+            {blogs?.length > 0 ? (
               blogs.map((blog) => (
                 <tr key={blog.id}>
                   <td>{blog.id}</td>

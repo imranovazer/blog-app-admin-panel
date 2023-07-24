@@ -67,28 +67,22 @@ function CreateArticle() {
     try {
       const dataToSend = saveDataOnLangChange();
 
-      const formdata = {
-        locales: dataToSend,
-        file: "Azer",
-      };
-      //   const formdata = new FormData();
-      //   dataToSend.forEach((send, index) => {
-      //     formdata.append(`locales[${index}][languageId]`, send.languageId);
-      //     formdata.append(`locales[${index}][title]`, send.title);
-      //     formdata.append(`locales[${index}][content]`, send.content);
-      //     formdata.append(`locales[${index}][description]`, send.description);
-      //   });
-      //   categories.forEach((category, index) => {
-      //     formdata.append(`categories[${index}][name]`, category);
-      //   });
-      //   formdata.append("File", file);
-      //   formdata.append("date", date);
-      //   const res = await axiosInstance.post("/article", formdata, {
-      //     headers: {
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   });
-      const res = await axiosInstance.post("/article", formdata);
+      const formdata = new FormData();
+      dataToSend.forEach((send, index) => {
+        formdata.append(`locales[${index}][languageId]`, send.languageId);
+        formdata.append(`locales[${index}][title]`, send.title);
+        formdata.append(`locales[${index}][content]`, send.content);
+        formdata.append(`locales[${index}][description]`, send.description);
+      });
+
+      formdata.append("image", file);
+
+      const res = await axiosInstance.post("/article", formdata, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      // const res = await axiosInstance.post("/article", formdata);
       setAlertType(true);
       setAlertContent("New article created succesffully!");
       setAlert(true);
@@ -117,7 +111,7 @@ function CreateArticle() {
 
   const handleDeleteLang = (event, id) => {
     event.stopPropagation();
-    if (locales.length == 1) {
+    if (locales?.length == 1) {
       return;
     } else {
       const newLocales = locales.filter((e) => e.languageId != id);
@@ -190,17 +184,6 @@ function CreateArticle() {
                 </Option>
               ))}
           </Select>
-          <Input type="date" onChange={(e) => setDate(e.target.value)} />
-          <div className="flex gap-3">
-            <Input
-              type="text"
-              placeholder="Enter category"
-              className="w-full"
-              value={categoryInput}
-              onChange={(e) => setCategoryInput(e.target.value)}
-            />
-            <Button onClick={handleCategoryAdd}>Add</Button>
-          </div>
 
           <div className="flex gap-2">
             {categories &&

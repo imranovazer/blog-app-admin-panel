@@ -104,7 +104,7 @@ function EditPost() {
 
   const handleDeleteLang = (event, id) => {
     event.stopPropagation();
-    if (locales.length == 1) {
+    if (locales?.length == 1) {
       return;
     } else {
       const newLocales = locales.filter((e) => e.languageId != id);

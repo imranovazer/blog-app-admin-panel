@@ -13,24 +13,24 @@ function EditSkillModal({
   setAlertDisplay,
   setAlertContent,
   setAlertType,
-  companyToEdit,
-  setCompanyToEdit,
-  fetchCompanies,
+  skillToEdit,
+  setSkillToEdit,
+  fetchSkills,
 }) {
   const [file, setFile] = useState();
 
-  const handleEditCompanyName = async () => {
+  const handleEditSkillName = async () => {
     try {
-      const res = await ProfileApi.editCompanyName(companyToEdit.id, {
-        name: companyToEdit.name,
+      const res = await ProfileApi.editSkillName(skillToEdit.id, {
+        name: skillToEdit.name,
       });
-      fetchCompanies();
+      fetchSkills();
       setAlertType(true);
-      setAlertContent("Company name edited successfully");
+      setAlertContent("Skill name edited successfully");
       setAlertDisplay(true);
     } catch (error) {
       setAlertType(false);
-      setAlertContent("Unable to edit company name");
+      setAlertContent("Unable to edit skill name");
       setAlertDisplay(true);
     }
   };
@@ -38,37 +38,34 @@ function EditSkillModal({
     try {
       const dataToSend = new FormData();
       dataToSend.append("image", file);
-      const res = await ProfileApi.editCompanyPhoto(
-        companyToEdit.id,
-        dataToSend
-      );
-      fetchCompanies();
+      const res = await ProfileApi.editSkillImage(skillToEdit.id, dataToSend);
+      fetchSkills();
       setAlertType(true);
-      setAlertContent("Company image edited successfully");
+      setAlertContent("Skill image edited successfully");
       setAlertDisplay(true);
       setOpen(false);
     } catch (error) {
       setAlertType(false);
-      setAlertContent("Unable to edit company image");
+      setAlertContent("Unable to edit skill image");
       setAlertDisplay(true);
       setOpen(false);
     }
   };
   return (
-    <MyModal open={open} setOpen={setOpen} title={"Edit company"}>
+    <MyModal open={open} setOpen={setOpen} title={"Edit skill"}>
       <div className=" relative flex flex-col gap-3 items-center">
         <Input
           sx={{ width: "400px" }}
           placeholder="Company name"
-          value={companyToEdit?.name}
+          value={skillToEdit?.name}
           onChange={(e) =>
-            setCompanyToEdit((prevState) => ({
+            setSkillToEdit((prevState) => ({
               ...prevState,
               name: e.target.value,
             }))
           }
         ></Input>
-        <Button fullWidth onClick={handleEditCompanyName}>
+        <Button fullWidth onClick={handleEditSkillName}>
           Edit name
         </Button>
         <DropFileInput file={file} setFile={setFile} />
