@@ -16,9 +16,11 @@ function CreateArticle() {
   const [alertContent, setAlertContent] = useState();
   const [select, setSelect] = useState("null");
   const [file, setFile] = useState();
-  const [date, setDate] = useState(null);
+
+  const [tagInput, setTagInput] = useState();
+
   const [languages, setLanguages] = useState([]);
-  const [categoryInput, setCategoryInput] = useState();
+  const [authorInput, setAuthorInput] = useState();
   const [locales, setLocales] = useState([
     {
       languageId: 2,
@@ -28,7 +30,8 @@ function CreateArticle() {
     },
   ]);
 
-  const [categories, setCategories] = useState([]);
+  const [authors, setAuthors] = useState([]);
+  const [tags, setTags] = useState([]);
 
   const [activeLocale, setActiveLocale] = useState(locales[0]);
 
@@ -74,6 +77,12 @@ function CreateArticle() {
         formdata.append(`locales[${index}][content]`, send.content);
         formdata.append(`locales[${index}][description]`, send.description);
       });
+      // authors.forEach((send, index) => {
+      //   formdata.append(`authors[${index}][name]`, send);
+      // });
+      // tags.forEach((send, index) => {
+      //   formdata.append(`tags[${index}][name]`, send);
+      // });
 
       formdata.append("image", file);
 
@@ -95,10 +104,8 @@ function CreateArticle() {
         },
       ]);
       setActiveLocale(locales[0]);
-
       setFile(null);
-      setDate(null);
-      setCategories([]);
+      setAuthors([]);
 
       console.log(res);
     } catch (error) {
@@ -136,18 +143,35 @@ function CreateArticle() {
     });
   };
 
-  const handleCategoryAdd = () => {
-    if (categories.includes(categoryInput)) {
+  const handleAuthorAdd = () => {
+    if (authors.includes(authorInput)) {
+      return;
+    } else if (authorInput.trim() == "") {
       return;
     } else {
-      setCategories((prev) => [...prev, categoryInput]);
-      setCategoryInput("");
+      setAuthors((prev) => [...prev, authorInput]);
+      setAuthorInput("");
     }
   };
 
-  const handleCategoryDelete = (category) => {
-    const newCategories = categories.filter((item) => item !== category);
-    setCategories(newCategories);
+  const handeTagAdd = () => {
+    if (tags.includes(tagInput)) {
+      return;
+    } else if (tagInput.trim() == "") {
+      return;
+    } else {
+      setTags((prev) => [...prev, tagInput]);
+      setTagInput("");
+    }
+  };
+
+  const handleAuthorDelete = (author) => {
+    const newCategories = authors.filter((item) => item !== author);
+    setAuthors(newCategories);
+  };
+  const handleTagDelete = (tag) => {
+    const newTags = tags.filter((item) => item !== tag);
+    setTags(newTags);
   };
 
   const handleSetActiveLocale = (locale) => {
@@ -184,18 +208,57 @@ function CreateArticle() {
                 </Option>
               ))}
           </Select>
+          <div className="flex gap-3">
+            <Input
+              type="text"
+              AlertInvertedColors
+              placeholder="Enter author name"
+              className="w-full"
+              value={authorInput}
+              onChange={(e) => setAuthorInput(e.target.value)}
+            />
+            <Button onClick={handleAuthorAdd}>Add</Button>
+          </div>
 
           <div className="flex gap-2">
-            {categories &&
-              categories.map((category, index) => (
+            {authors &&
+              authors.map((author, index) => (
                 <div
                   key={index}
                   className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
                 >
-                  {category}
+                  {author}
                   <div
                     className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
-                    onClick={() => handleCategoryDelete(category)}
+                    onClick={() => handleAuthorDelete(author)}
+                  >
+                    x
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className="flex gap-3">
+            <Input
+              type="text"
+              AlertInvertedColors
+              placeholder="Enter tag name"
+              className="w-full"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+            />
+            <Button onClick={handeTagAdd}>Add</Button>
+          </div>
+          <div className="flex gap-2">
+            {tags &&
+              tags.map((tag, index) => (
+                <div
+                  key={index}
+                  className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
+                >
+                  {tag}
+                  <div
+                    className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
+                    onClick={() => handleTagDelete(tag)}
                   >
                     x
                   </div>

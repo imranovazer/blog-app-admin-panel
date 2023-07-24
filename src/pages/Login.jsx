@@ -56,7 +56,6 @@ export default function SignInSide() {
         email: data.get("email"),
         password: data.get("password"),
       });
-      localStorage.setItem("accessToken", true);
       setIsAuth(true);
       navigate("/");
     } catch (error) {

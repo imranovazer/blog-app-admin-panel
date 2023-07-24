@@ -140,6 +140,8 @@ function CreatePost() {
   const handleCategoryAdd = () => {
     if (categories.includes(categoryInput)) {
       return;
+    } else if (categoryInput.trim() == "") {
+      return;
     } else {
       setCategories((prev) => [...prev, categoryInput]);
       setCategoryInput("");
