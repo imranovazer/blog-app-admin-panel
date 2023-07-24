@@ -11,6 +11,7 @@ import EditPost from "./pages/EditPost/EditPost";
 import Articles from "./pages/Articles/Articles";
 import CreateArticle from "./pages/CreateArticle/CreateArticle";
 import Profile from "./pages/Profile/Profile";
+import Tags from "./pages/Tags/Tags";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/blog/:id" element={<EditPost />} />
             <Route path="/articles" element={<Articles />} />
+            <Route path="/tags" element={<Tags />} />
             <Route path="/create-article" element={<CreateArticle />} />
           </Route>
         </Route>
