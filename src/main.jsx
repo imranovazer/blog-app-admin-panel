@@ -5,13 +5,16 @@ import "./index.css";
 
 import { BrowserRouter } from "react-router-dom";
 import AuthContexProvider from "./contex/AuthContex.jsx";
+import AlertContexProvider from "./contex/AlertContex.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <AuthContexProvider>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <AlertContexProvider>
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </AlertContexProvider>
     </AuthContexProvider>
   </React.StrictMode>
 );

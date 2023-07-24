@@ -8,6 +8,7 @@ function Articles() {
   const [articles, setArticles] = useState([]);
   console.log(articles);
   const navigate = useNavigate();
+
   const getData = async () => {
     const res = await articlesApi.getArticles();
 

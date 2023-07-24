@@ -38,7 +38,7 @@ const DropFileInput = ({ file, setFile }) => {
         onDrop={onDrop}
       >
         <div className="drop-file-input__label">
-          {fileUrl ? (
+          {fileUrl && file ? (
             <img
               src={fileUrl}
               style={{ width: "100%" }}

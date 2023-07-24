@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DropFileInput from "../../components/drop-file-input/DropFileInput";
 import axiosInstance from "../../axios";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
+
 import Input from "@mui/joy/Input";
 import Textarea from "@mui/joy/Textarea";
 import { Button } from "@mui/joy";
@@ -11,7 +10,6 @@ import AlertInvertedColors from "../../components/AlertInvertedColors";
 import { useParams } from "react-router-dom";
 import editBlogApi from "./api";
 import Loading from "../../components/Loading";
-import blogApi from "../Blogs/api";
 
 function EditPost() {
   const [loading, setLoading] = useState(true);
@@ -78,7 +76,7 @@ function EditPost() {
 
     getLanguages();
   }, []);
-  const handleImageUpdate = async () => {};
+
   const handleSubmit = async () => {
     try {
       const dataToSend = saveDataOnLangChange();
@@ -102,32 +100,6 @@ function EditPost() {
     }
   };
 
-  const handleDeleteLang = (event, id) => {
-    event.stopPropagation();
-    if (locales?.length == 1) {
-      return;
-    } else {
-      const newLocales = locales.filter((e) => e.languageId != id);
-      setLocales(newLocales);
-    }
-  };
-  const handleAddLocale = (language) => {
-    setLocales((prevState) => {
-      if (prevState.some((e) => e.languageId == language)) {
-        return prevState;
-      } else {
-        return [
-          ...prevState,
-          {
-            languageId: language,
-            title: "",
-            description: "",
-            content: "",
-          },
-        ];
-      }
-    });
-  };
   const hadleImageUpdate = async () => {
     try {
       const data = new FormData();
@@ -178,24 +150,6 @@ function EditPost() {
           <Button onClick={hadleImageUpdate}>Update image </Button>
         </div>
         <div className="w-1/2 flex flex-col gap-4">
-          <Select
-            defaultValue="null"
-            value={select}
-            sx={{ width: "100%" }}
-            onChange={(e) => setSelect("null")}
-          >
-            <Option value="null">Select language to add</Option>
-            {languages &&
-              languages.map((item) => (
-                <Option
-                  key={item.id}
-                  value={item.id}
-                  onClick={() => handleAddLocale(item.id)}
-                >
-                  {item.name}
-                </Option>
-              ))}
-          </Select>
           <Input
             type="date"
             value={date}
@@ -245,17 +199,9 @@ function EditPost() {
                   activeLocale.languageId == locale.languageId
                     ? "bg-slate-200"
                     : "bg-white"
-                } hover:bg-slate-200  cursor-pointer flex w-[130px] justify-between content-center p-2  font-bold  rounded-lg  shadow-sm gap-2 items-center`}
+                } hover:bg-slate-200  cursor-pointer flex w-[130px] justify-center content-center p-2  font-bold  rounded-lg  shadow-sm gap-2 items-center`}
               >
                 <p> {languages.find((e) => e.id == locale.languageId)?.name}</p>
-                <button
-                  className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 "
-                  onClick={(event) =>
-                    handleDeleteLang(event, locale.languageId)
-                  }
-                >
-                  x
-                </button>
               </div>
             ))}
         </div>
