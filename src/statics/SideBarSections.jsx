@@ -17,6 +17,11 @@ const SidebarSections = [
     icon: <ArticleIcon />,
     link: "/articles",
   },
+  {
+    section: "Tags",
+    icon: <ArticleIcon />,
+    link: "/tags",
+  },
 ];
 
 export default SidebarSections;

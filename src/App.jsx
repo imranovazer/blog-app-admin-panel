@@ -12,6 +12,7 @@ import Articles from "./pages/Articles/Articles";
 import CreateArticle from "./pages/CreateArticle/CreateArticle";
 import Profile from "./pages/Profile/Profile";
 import EditArticle from "./pages/EditArticle/EditArticle";
+import Tags from "./pages/Tags/Tags";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
             <Route path="/blog/:id" element={<EditPost />} />
             <Route path="/articles" element={<Articles />} />
             <Route path="/article/:id" element={<EditArticle />} />
+            <Route path="/tags" element={<Tags />} />
             <Route path="/create-article" element={<CreateArticle />} />
           </Route>
         </Route>
