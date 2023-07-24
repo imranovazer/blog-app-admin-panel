@@ -50,7 +50,7 @@ function Articles() {
                     <Button
                       color="warning"
                       onClick={() => {
-                        navigate(`/blog/${article.id}`);
+                        navigate(`/article/${article.id}`);
                       }}
                     >
                       Edit

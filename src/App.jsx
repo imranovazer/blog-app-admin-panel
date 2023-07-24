@@ -11,6 +11,7 @@ import EditPost from "./pages/EditPost/EditPost";
 import Articles from "./pages/Articles/Articles";
 import CreateArticle from "./pages/CreateArticle/CreateArticle";
 import Profile from "./pages/Profile/Profile";
+import EditArticle from "./pages/EditArticle/EditArticle";
 
 function App() {
   return (
@@ -20,11 +21,11 @@ function App() {
           <Route element={<Layout />}>
             <Route path="/" element={<Home />} />
             <Route path="/blogs" element={<Blogs />} />
-
             <Route path="/create-blog" element={<CreatePost />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/blog/:id" element={<EditPost />} />
             <Route path="/articles" element={<Articles />} />
+            <Route path="/article/:id" element={<EditArticle />} />
             <Route path="/create-article" element={<CreateArticle />} />
           </Route>
         </Route>
