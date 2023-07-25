@@ -67,8 +67,19 @@ function CreatePost() {
     try {
       const dataToSend = saveDataOnLangChange();
 
+      const finalData = languages.map((language, index) => {
+        let isExsist = dataToSend.find(
+          (data) => data.languageId == language.id
+        );
+        if (isExsist) {
+          return isExsist;
+        } else {
+          return { ...dataToSend[0], languageId: language.id };
+        }
+      });
+
       const formdata = new FormData();
-      dataToSend.forEach((send, index) => {
+      finalData.forEach((send, index) => {
         formdata.append(`locales[${index}][languageId]`, send.languageId);
         formdata.append(`locales[${index}][title]`, send.title);
         formdata.append(`locales[${index}][content]`, send.content);
