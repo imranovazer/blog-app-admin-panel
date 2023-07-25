@@ -13,6 +13,7 @@ import CreateArticle from "./pages/CreateArticle/CreateArticle";
 import Profile from "./pages/Profile/Profile";
 import EditArticle from "./pages/EditArticle/EditArticle";
 import Tags from "./pages/Tags/Tags";
+import Services from "./pages/services/Services";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/article/:id" element={<EditArticle />} />
             <Route path="/tags" element={<Tags />} />
             <Route path="/create-article" element={<CreateArticle />} />
+            <Route path="/services" element={<Services />} />
           </Route>
         </Route>
         <Route element={<ProectedRoute shouldAuth={false} />}>

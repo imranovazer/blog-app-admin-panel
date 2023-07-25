@@ -1,5 +1,6 @@
 import BookIcon from "@mui/icons-material/Book";
 import ArticleIcon from "@mui/icons-material/Article";
+import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 const SidebarSections = [
   {
@@ -16,6 +17,11 @@ const SidebarSections = [
     section: "Article",
     icon: <ArticleIcon />,
     link: "/articles",
+  },
+  {
+    section: "Services",
+    icon: <MiscellaneousServicesIcon />,
+    link: "/services",
   },
   {
     section: "Tags",
