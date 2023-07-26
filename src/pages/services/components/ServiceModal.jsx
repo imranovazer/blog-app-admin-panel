@@ -140,11 +140,11 @@ const ServiceModal = ({
 
         res = await ServiceApi.postService(formdata);
       } else if (mode == "edit") {
-        const dataToSend = {
-          locales: locales,
+        const jsonToSend = {
+          locales: dataToSend,
           color: color,
         };
-        res = await ServiceApi.editService(serviceToEdit.id, dataToSend);
+        res = await ServiceApi.editService(serviceToEdit.id, jsonToSend);
       }
       fetchServices();
       displayAlert(true, "New service created");
@@ -162,6 +162,17 @@ const ServiceModal = ({
     } catch (error) {
       displayAlert(false, "Unable to create service");
       setOpen(false);
+    }
+  };
+  const handleImageEdit = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append("image", formdata);
+      const res = await ServiceApi.editServiceImage(serviceToEdit.id, formdata);
+
+      displayAlert(true, "Image of service edited");
+    } catch (error) {
+      displayAlert(false, "nable edit image of service");
     }
   };
   return (
@@ -246,11 +257,13 @@ const ServiceModal = ({
             value={activeLocale.description}
             onChange={(e) => handleInputChange("description", e.target.value)}
           />
-          <DropFileInput file={file} setFile={setFile} />
-
           <Button onClick={handleSubmit}>
             {mode == "create" ? "Create" : "Edit"}
           </Button>
+          <DropFileInput file={file} setFile={setFile} />
+          {mode == "edit" ? (
+            <Button onClick={handleImageEdit}>Edit image</Button>
+          ) : null}
         </div>
       </MyModal>
     </div>
