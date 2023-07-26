@@ -14,36 +14,33 @@ const ServiceModal = ({
 }) => {
   const [file, setFile] = useState();
 
-  useEffect(() => {
-    if (mode == "edit") {
-      if (serviceToEdit) {
-        console.log("service to edit", serviceToEdit);
-        setColor(serviceToEdit.color);
-        const localesToEdit = serviceToEdit.locales.map((item) => ({
-          ...item,
-          languageId: item.language.id,
-          description: item.description,
-          content: item.content,
-          title: item.title,
-        }));
-
-        setLocales(localesToEdit);
-      }
-    }
-  }, [mode, serviceToEdit]);
   const [languages, setLanguages] = useState([]);
   const [select, setSelect] = useState("null");
-  const [color, setColor] = useState();
+  const [color, setColor] = useState(
+    mode == "edit" ? serviceToEdit.color : null
+  );
   const { displayAlert } = useContext(AlertContex);
-  const [locales, setLocales] = useState([
-    {
-      languageId: 2,
-      title: "",
-      description: "",
-      content: "",
-    },
-  ]);
-  console.log("LOCALES", locales);
+  const [locales, setLocales] = useState(
+    mode == "edit"
+      ? serviceToEdit.locales
+      : [
+          {
+            languageId: 2,
+            title: "",
+            description: "",
+            content: "",
+          },
+        ]
+  );
+
+  useEffect(() => {
+    if (mode == "edit") {
+      setLocales(serviceToEdit.locales);
+      setColor(serviceToEdit.color);
+      setActiveLocale(serviceToEdit.locales[0]);
+    }
+  }, [mode, serviceToEdit]);
+
   const handleAddLocale = (language) => {
     setLocales((prevState) => {
       if (prevState.some((e) => e.languageId == language)) {
@@ -69,7 +66,20 @@ const ServiceModal = ({
         setLanguages(res.data.data);
       } catch (error) {}
     };
+
     getLanguages();
+
+    return () => {
+      setLocales([
+        {
+          languageId: 2,
+          title: "",
+          description: "",
+          content: "",
+        },
+      ]);
+      setColor(null);
+    };
   }, []);
   const saveDataOnLangChange = () => {
     const clonedLocales = [...locales];
@@ -115,18 +125,27 @@ const ServiceModal = ({
         }
       });
 
-      const formdata = new FormData();
-      finalData.forEach((send, index) => {
-        formdata.append(`locales[${index}][languageId]`, send.languageId);
-        formdata.append(`locales[${index}][title]`, send.title);
-        formdata.append(`locales[${index}][content]`, send.content);
-        formdata.append(`locales[${index}][description]`, send.description);
-      });
-      formdata.append("image", file);
-      formdata.append("color", color);
-
       //   const res1 = await ServiceApi.editService(serviceToEdit.id, formdata);
-      const res = await ServiceApi.postService(formdata);
+      let res;
+      if (mode == "cteate") {
+        const formdata = new FormData();
+        finalData.forEach((send, index) => {
+          formdata.append(`locales[${index}][languageId]`, send.languageId);
+          formdata.append(`locales[${index}][title]`, send.title);
+          formdata.append(`locales[${index}][content]`, send.content);
+          formdata.append(`locales[${index}][description]`, send.description);
+        });
+        formdata.append("image", file);
+        formdata.append("color", color);
+
+        res = await ServiceApi.postService(formdata);
+      } else if (mode == "edit") {
+        const dataToSend = {
+          locales: locales,
+          color: color,
+        };
+        res = await ServiceApi.editService(serviceToEdit.id, dataToSend);
+      }
       fetchServices();
       displayAlert(true, "New service created");
       setLocales([

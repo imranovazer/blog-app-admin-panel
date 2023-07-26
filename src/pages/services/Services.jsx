@@ -7,16 +7,32 @@ const Services = () => {
   //(type , contetnt)
   const { displayAlert } = useContext(AlertContex);
   const [services, setServices] = useState([]);
-  console.log(services);
   const [serviceModal, setServiceModal] = useState(false);
   const [modalMode, setModalMode] = useState("create");
   const [serviceToEdit, setServiceToEdit] = useState();
+
   const fetchServices = async () => {
     try {
       const res = await ServiceApi.getServices();
       setServices(res);
     } catch (error) {}
   };
+  const handleSetServiceToEdit = (service) => {
+    const localesOfServiceToBeEddited = service.locales.map((item) => {
+      return {
+        languageId: item.language.id,
+        content: item.content,
+        title: item.title,
+        description: item.description,
+      };
+    });
+    const serviceToBeEddited = {
+      ...service,
+      locales: localesOfServiceToBeEddited,
+    };
+    setServiceToEdit(serviceToBeEddited);
+  };
+
   const handleDelete = async (e, id) => {
     e.stopPropagation();
     try {
@@ -27,7 +43,6 @@ const Services = () => {
       displayAlert(false, "Unable to delete service");
     }
   };
-
   useEffect(() => {
     fetchServices();
   }, []);
@@ -52,7 +67,8 @@ const Services = () => {
                 className="w-[100%] h-[174px] cursor-pointer flex flex-col  p-4 gap-1 rounded-md justify-around"
                 style={{ backgroundColor: service.color }}
                 onClick={() => {
-                  setServiceToEdit(service);
+                  handleSetServiceToEdit(service);
+
                   setModalMode("edit");
                   setServiceModal(true);
                 }}
@@ -82,13 +98,15 @@ const Services = () => {
           ))}
         </div>
       </div>
-      <ServiceModal
-        serviceToEdit={serviceToEdit}
-        mode={modalMode}
-        open={serviceModal}
-        setOpen={setServiceModal}
-        fetchServices={fetchServices}
-      />
+      {serviceModal ? (
+        <ServiceModal
+          serviceToEdit={serviceToEdit}
+          mode={modalMode}
+          open={serviceModal}
+          setOpen={setServiceModal}
+          fetchServices={fetchServices}
+        />
+      ) : null}
     </div>
   );
 };
