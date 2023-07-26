@@ -22,7 +22,7 @@ export default function MyModal({ children, open, setOpen, title }) {
         <Sheet
           variant="outlined"
           sx={{
-            maxWidth: 500,
+            maxWidth: 600,
             borderRadius: "md",
             p: 3,
             boxShadow: "lg",
