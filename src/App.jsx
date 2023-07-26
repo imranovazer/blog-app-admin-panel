@@ -14,6 +14,7 @@ import Profile from "./pages/Profile/Profile";
 import EditArticle from "./pages/EditArticle/EditArticle";
 import Tags from "./pages/Tags/Tags";
 import Gallery from "./pages/Gallery/Gallery";
+import Message from "./pages/Message/Message";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/article/:id" element={<EditArticle />} />
             <Route path="/tags" element={<Tags />} />
             <Route path="/gallery" element={<Gallery />} />
+            <Route path="/message" element={<Message />} />
             <Route path="/create-article" element={<CreateArticle />} />
           </Route>
         </Route>

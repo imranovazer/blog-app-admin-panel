@@ -26,7 +26,12 @@ const SidebarSections = [
     section: "Gallery",
     icon: <ArticleIcon />,
     link: "/gallery",
-  }
+  },
+  {
+    section: "Message",
+    icon: <ArticleIcon />,
+    link: "/message",
+  },
 ];
 
 export default SidebarSections;

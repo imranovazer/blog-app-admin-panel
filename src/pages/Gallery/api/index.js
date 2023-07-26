@@ -26,8 +26,12 @@ const galleryApi = {
     }
   },
   deleteById: async (id) => {
-    const res = await axiosInstance.delete(`/gallery/${id}`);
-    return res.data.data;
+    try {
+      const res = await axiosInstance.delete(`/gallery/${id}`);
+      return res.data.data;
+    } catch (error) {
+      console.log(error);
+    }
   },
 };
 
