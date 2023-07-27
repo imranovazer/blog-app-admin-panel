@@ -9,7 +9,7 @@ function AlertContexProvider({ children }) {
   const [alertType, setAlertType] = useState();
   const [alertContent, setAlertContent] = useState();
 
-  const displayAlert = (type, content) => {
+  const displayAlert = (type, content) => { 
     setAlertType(type);
     setAlertContent(content);
     setAlert(true);

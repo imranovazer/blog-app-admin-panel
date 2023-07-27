@@ -18,24 +18,38 @@ function EditPost() {
   const [alert, setAlert] = useState();
   const [alertType, setAlertType] = useState();
   const [alertContent, setAlertContent] = useState();
-  const [file, setFile] = useState();
-  const [date, setDate] = useState(null);
-  const [languages, setLanguages] = useState([]);
-  const [categoryInput, setCategoryInput] = useState();
-  const [locales, setLocales] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [activeLocale, setActiveLocale] = useState(locales[0]);
 
+  const [file, setFile] = useState();
+
+  const [languages, setLanguages] = useState([]);
+
+  const [locales, setLocales] = useState([]);
+
+  const [activeLocale, setActiveLocale] = useState(locales[0]);
+  const [tags, setTags] = useState([]);
+  const [tagInput, setTagInput] = useState();
+  const [authors, setAuthors] = useState([]);
+
+  const [authorSurnameInput, setAuthorSurnameInput] = useState();
+  const [authorInput, setAuthorInput] = useState();
   useEffect(() => {
     const getData = async () => {
       const res = await EditArticleApi.getArticleById(id);
       console.log(res);
       const localesToset = res.locales.map((item) => ({
-        ...item,
+        content: item.content,
+        title: item.title,
         languageId: item.language.id,
+        description: item.description,
       }));
       setLocales(localesToset);
-
+      const tagsToset = res.tags.map((item) => item.name);
+      setTags(tagsToset);
+      const AuthorsToSet = res.authors.map((item) => ({
+        firstName: item.firstName,
+        lastName: item.lastName,
+      }));
+      setAuthors(AuthorsToSet);
       setActiveLocale(localesToset[0]);
       setLoading(false);
     };
@@ -77,11 +91,13 @@ function EditPost() {
   const handleSubmit = async () => {
     try {
       const dataToSend = saveDataOnLangChange();
-      const categoryTosend = categories.map((item) => ({ name: item }));
+      const tagsTosent = tags.map((item) => ({
+        name: item,
+      }));
       const jsonToSend = {
         locales: dataToSend,
-        categories: categoryTosend,
-        date: date,
+        authors: authors,
+        tags: tagsTosent,
       };
       const res = await axiosInstance.patch(`/article/${id}`, jsonToSend);
       setAlertType(true);
@@ -97,13 +113,30 @@ function EditPost() {
     }
   };
 
-  const handleDeleteLang = (event, id) => {
-    event.stopPropagation();
-    if (locales?.length == 1) {
+  const handleAuthorAdd = () => {
+    const userName = `${authorInput} ${authorSurnameInput}`;
+    const fullName = { firstName: authorInput, lastName: authorSurnameInput };
+
+    if (
+      authors.some(
+        (author) =>
+          author.firstName === fullName.firstName &&
+          author.lastName === fullName.lastName
+      )
+    ) {
+      // Author already exists, do nothing.
+      return;
+    } else if (userName.trim() === "") {
+      // Empty input, do nothing.
       return;
     } else {
-      const newLocales = locales.filter((e) => e.languageId != id);
-      setLocales(newLocales);
+      // Add new author object to the array.
+      setAuthors((prev) => [
+        ...prev,
+        { firstName: authorInput, lastName: authorSurnameInput },
+      ]);
+      setAuthorInput("");
+      setAuthorSurnameInput("");
     }
   };
 
@@ -123,20 +156,25 @@ function EditPost() {
       console.log(error);
     }
   };
-  const handleCategoryAdd = () => {
-    if (categories.includes(categoryInput)) {
+  const handeTagAdd = () => {
+    if (tags.includes(tagInput)) {
+      return;
+    } else if (tagInput.trim() == "") {
       return;
     } else {
-      setCategories((prev) => [...prev, categoryInput]);
-      setCategoryInput("");
+      setTags((prev) => [...prev, tagInput]);
+      setTagInput("");
     }
   };
 
-  const handleCategoryDelete = (category) => {
-    const newCategories = categories.filter((item) => item !== category);
-    setCategories(newCategories);
+  const handleAuthorDelete = (author) => {
+    const newCategories = authors.filter((item) => item !== author);
+    setAuthors(newCategories);
   };
-
+  const handleTagDelete = (tag) => {
+    const newTags = tags.filter((item) => item !== tag);
+    setTags(newTags);
+  };
   const handleSetActiveLocale = (locale) => {
     setActiveLocale(locale);
   };
@@ -157,33 +195,65 @@ function EditPost() {
           <Button onClick={hadleImageUpdate}>Update image </Button>
         </div>
         <div className="w-1/2 flex flex-col gap-4">
-          <Input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
           <div className="flex gap-3">
             <Input
               type="text"
-              placeholder="Enter category"
+              AlertInvertedColors
+              placeholder="Enter author name"
               className="w-full"
-              value={categoryInput}
-              onChange={(e) => setCategoryInput(e.target.value)}
+              value={authorInput}
+              onChange={(e) => setAuthorInput(e.target.value)}
             />
-            <Button onClick={handleCategoryAdd}>Add</Button>
+            <Input
+              type="text"
+              AlertInvertedColors
+              placeholder="Enter author name"
+              className="w-full"
+              value={authorSurnameInput}
+              onChange={(e) => setAuthorSurnameInput(e.target.value)}
+            />
+            <Button onClick={handleAuthorAdd}>Add</Button>
           </div>
 
           <div className="flex gap-2">
-            {categories &&
-              categories.map((category, index) => (
+            {authors &&
+              authors.map((author, index) => (
                 <div
                   key={index}
                   className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
                 >
-                  {category}
+                  {`${author.firstName} ${author.lastName}`}
                   <div
                     className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
-                    onClick={() => handleCategoryDelete(category)}
+                    onClick={() => handleAuthorDelete(author)}
+                  >
+                    x
+                  </div>
+                </div>
+              ))}
+          </div>
+          <div className="flex gap-3">
+            <Input
+              type="text"
+              AlertInvertedColors
+              placeholder="Enter tag name"
+              className="w-full"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
+            />
+            <Button onClick={handeTagAdd}>Add</Button>
+          </div>
+          <div className="flex gap-2">
+            {tags &&
+              tags.map((tag, index) => (
+                <div
+                  key={index}
+                  className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
+                >
+                  {tag}
+                  <div
+                    className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
+                    onClick={() => handleTagDelete(tag)}
                   >
                     x
                   </div>

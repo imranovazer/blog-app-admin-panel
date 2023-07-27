@@ -20,6 +20,7 @@ function CreateArticle() {
   const [tagInput, setTagInput] = useState();
 
   const [languages, setLanguages] = useState([]);
+  const [authorSurnameInput, setAuthorSurnameInput] = useState();
   const [authorInput, setAuthorInput] = useState();
   const [locales, setLocales] = useState([
     {
@@ -88,12 +89,13 @@ function CreateArticle() {
         formdata.append(`locales[${index}][content]`, send.content);
         formdata.append(`locales[${index}][description]`, send.description);
       });
-      // authors.forEach((send, index) => {
-      //   formdata.append(`authors[${index}][name]`, send);
-      // });
-      // tags.forEach((send, index) => {
-      //   formdata.append(`tags[${index}][name]`, send);
-      // });
+      authors.forEach((send, index) => {
+        formdata.append(`authors[${index}][firstName]`, send.firstName);
+        formdata.append(`authors[${index}][lastName]`, send.lastName);
+      });
+      tags.forEach((send, index) => {
+        formdata.append(`tags[${index}][name]`, send);
+      });
 
       formdata.append("image", file);
 
@@ -155,13 +157,29 @@ function CreateArticle() {
   };
 
   const handleAuthorAdd = () => {
-    if (authors.includes(authorInput)) {
+    const userName = `${authorInput} ${authorSurnameInput}`;
+    const fullName = { firstName: authorInput, lastName: authorSurnameInput };
+
+    if (
+      authors.some(
+        (author) =>
+          author.firstName === fullName.firstName &&
+          author.lastName === fullName.lastName
+      )
+    ) {
+      // Author already exists, do nothing.
       return;
-    } else if (authorInput.trim() == "") {
+    } else if (userName.trim() === "") {
+      // Empty input, do nothing.
       return;
     } else {
-      setAuthors((prev) => [...prev, authorInput]);
+      // Add new author object to the array.
+      setAuthors((prev) => [
+        ...prev,
+        { firstName: authorInput, lastName: authorSurnameInput },
+      ]);
       setAuthorInput("");
+      setAuthorSurnameInput("");
     }
   };
 
@@ -228,6 +246,14 @@ function CreateArticle() {
               value={authorInput}
               onChange={(e) => setAuthorInput(e.target.value)}
             />
+            <Input
+              type="text"
+              AlertInvertedColors
+              placeholder="Enter author surname"
+              className="w-full"
+              value={authorSurnameInput}
+              onChange={(e) => setAuthorSurnameInput(e.target.value)}
+            />
             <Button onClick={handleAuthorAdd}>Add</Button>
           </div>
 
@@ -238,7 +264,7 @@ function CreateArticle() {
                   key={index}
                   className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
                 >
-                  {author}
+                  {`${author.firstName} ${author.lastName}`}
                   <div
                     className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
                     onClick={() => handleAuthorDelete(author)}
