@@ -2,6 +2,7 @@ import BookIcon from "@mui/icons-material/Book";
 import ArticleIcon from "@mui/icons-material/Article";
 import MiscellaneousServicesIcon from "@mui/icons-material/MiscellaneousServices";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import EventIcon from "@mui/icons-material/Event";
 const SidebarSections = [
   {
     section: "Profile",
@@ -37,6 +38,11 @@ const SidebarSections = [
     section: "Message",
     icon: <ArticleIcon />,
     link: "/message",
+  },
+  {
+    section: "Event",
+    icon: <EventIcon />,
+    link: "/event",
   },
 ];
 

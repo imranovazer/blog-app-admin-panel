@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import DropFileInput from "../../components/drop-file-input/DropFileInput";
 import axiosInstance from "../../axios";
-import Select from "@mui/joy/Select";
-import Option from "@mui/joy/Option";
+
 import Input from "@mui/joy/Input";
 import Textarea from "@mui/joy/Textarea";
 import { Button } from "@mui/joy";
@@ -12,7 +11,7 @@ import { useParams } from "react-router-dom";
 import EditArticleApi from "./api";
 import Loading from "../../components/Loading";
 
-function EditPost() {
+function EditArticle() {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const [alert, setAlert] = useState();
@@ -306,4 +305,4 @@ function EditPost() {
   );
 }
 
-export default EditPost;
+export default EditArticle;
