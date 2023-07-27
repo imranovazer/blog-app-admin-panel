@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
 import { useNavigate } from "react-router-dom";
 import blogApi from "./api";
 import { Table } from "@mui/joy";
+import { AlertContex } from "../../contex/AlertContex";
 function Blogs() {
   const [blogs, setBlogs] = useState([]);
-
+  const { displayAlert } = useContext(AlertContex);
   const navigate = useNavigate();
   const getData = async () => {
     const res = await blogApi.getAll();
@@ -16,8 +17,13 @@ function Blogs() {
   }, []);
 
   const handleDelete = async (id) => {
-    const res = await blogApi.deleteById(id);
-    getData();
+    try {
+      const res = await blogApi.deleteById(id);
+      getData();
+      displayAlert(true, "Blog deleted successfully");
+    } catch (error) {
+      displayAlert(false, "Unable to delete blog");
+    }
   };
   return (
     <div className="container mx-auto flex flex-col gap-4">

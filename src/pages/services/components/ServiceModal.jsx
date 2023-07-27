@@ -16,9 +16,7 @@ const ServiceModal = ({
 
   const [languages, setLanguages] = useState([]);
   const [select, setSelect] = useState("null");
-  const [color, setColor] = useState(
-    mode == "edit" ? serviceToEdit.color : null
-  );
+  const [color, setColor] = useState("#FFFFFF");
   const { displayAlert } = useContext(AlertContex);
   const [locales, setLocales] = useState(
     mode == "edit"
@@ -127,7 +125,7 @@ const ServiceModal = ({
 
       //   const res1 = await ServiceApi.editService(serviceToEdit.id, formdata);
       let res;
-      if (mode == "cteate") {
+      if (mode == "create") {
         const formdata = new FormData();
         finalData.forEach((send, index) => {
           formdata.append(`locales[${index}][languageId]`, send.languageId);

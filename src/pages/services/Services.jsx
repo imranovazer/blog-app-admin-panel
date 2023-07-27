@@ -77,7 +77,7 @@ const Services = () => {
                   <img
                     src={service.imageUrl}
                     alt="icon"
-                    className="rounded-md object-cover  h-12 w-12 object-center"
+                    className="rounded-md object-cover   h-6 w-6 object-center"
                   />
                   <Button
                     color="danger"
