@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import DropFileInput from "../../components/drop-file-input/DropFileInput";
 import axiosInstance from "../../axios";
@@ -8,20 +8,17 @@ import Input from "@mui/joy/Input";
 import Textarea from "@mui/joy/Textarea";
 import { Button } from "@mui/joy";
 import JoditEditor from "jodit-react";
-import AlertInvertedColors from "../../components/AlertInvertedColors";
+import { AlertContex } from "../../contex/AlertContex";
 
-function CreateArticle() {
+function CreateEvent() {
   const [alert, setAlert] = useState();
   const [alertType, setAlertType] = useState();
   const [alertContent, setAlertContent] = useState();
   const [select, setSelect] = useState("null");
   const [file, setFile] = useState();
-
-  const [tagInput, setTagInput] = useState();
-
+  const [date, setDate] = useState(null);
   const [languages, setLanguages] = useState([]);
-  const [authorSurnameInput, setAuthorSurnameInput] = useState();
-  const [authorInput, setAuthorInput] = useState();
+
   const [locales, setLocales] = useState([
     {
       languageId: 2,
@@ -31,9 +28,8 @@ function CreateArticle() {
     },
   ]);
 
-  const [authors, setAuthors] = useState([]);
-  const [tags, setTags] = useState([]);
-
+  const [categories, setCategories] = useState([]);
+  const { displayAlert } = useContext(AlertContex);
   const [activeLocale, setActiveLocale] = useState(locales[0]);
 
   const saveDataOnLangChange = () => {
@@ -89,25 +85,14 @@ function CreateArticle() {
         formdata.append(`locales[${index}][content]`, send.content);
         formdata.append(`locales[${index}][description]`, send.description);
       });
-      authors.forEach((send, index) => {
-        formdata.append(`authors[${index}][firstName]`, send.firstName);
-        formdata.append(`authors[${index}][lastName]`, send.lastName);
-      });
-      tags.forEach((send, index) => {
-        formdata.append(`tags[${index}][name]`, send);
-      });
-
       formdata.append("image", file);
-
-      const res = await axiosInstance.post("/article", formdata, {
+      formdata.append("date", date);
+      const res = await axiosInstance.post("/event", formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-      // const res = await axiosInstance.post("/article", formdata);
-      setAlertType(true);
-      setAlertContent("New article created succesffully!");
-      setAlert(true);
+      displayAlert(true, "Event created successfully");
       setLocales([
         {
           languageId: 2,
@@ -117,15 +102,14 @@ function CreateArticle() {
         },
       ]);
       setActiveLocale(locales[0]);
+
       setFile(null);
-      setAuthors([]);
+      setDate(null);
+      setCategories([]);
 
       console.log(res);
     } catch (error) {
-      setAlertType(false);
-      setAlertContent("Unable to create article please fill all data!");
-      setAlert(true);
-      console.log(error);
+      displayAlert(false, "Unable to create event");
     }
   };
 
@@ -156,64 +140,11 @@ function CreateArticle() {
     });
   };
 
-  const handleAuthorAdd = () => {
-    const userName = `${authorInput} ${authorSurnameInput}`;
-    const fullName = { firstName: authorInput, lastName: authorSurnameInput };
-
-    if (
-      authors.some(
-        (author) =>
-          author.firstName === fullName.firstName &&
-          author.lastName === fullName.lastName
-      )
-    ) {
-      // Author already exists, do nothing.
-      return;
-    } else if (userName.trim() === "") {
-      // Empty input, do nothing.
-      return;
-    } else {
-      // Add new author object to the array.
-      setAuthors((prev) => [
-        ...prev,
-        { firstName: authorInput, lastName: authorSurnameInput },
-      ]);
-      setAuthorInput("");
-      setAuthorSurnameInput("");
-    }
-  };
-
-  const handeTagAdd = () => {
-    if (tags.includes(tagInput)) {
-      return;
-    } else if (tagInput.trim() == "") {
-      return;
-    } else {
-      setTags((prev) => [...prev, tagInput]);
-      setTagInput("");
-    }
-  };
-
-  const handleAuthorDelete = (author) => {
-    const newCategories = authors.filter((item) => item !== author);
-    setAuthors(newCategories);
-  };
-  const handleTagDelete = (tag) => {
-    const newTags = tags.filter((item) => item !== tag);
-    setTags(newTags);
-  };
-
   const handleSetActiveLocale = (locale) => {
     setActiveLocale(locale);
   };
   return (
     <div className="container mx-auto flex flex-col gap-2">
-      <AlertInvertedColors
-        display={alert}
-        type={alertType}
-        setDisplay={setAlert}
-        content={alertContent}
-      />
       <div className="rounded-xl shadow-md bg-slate-200 p-3 flex justify-between gap-3">
         <div className="w-1/2">
           <DropFileInput file={file} setFile={setFile} />
@@ -237,71 +168,7 @@ function CreateArticle() {
                 </Option>
               ))}
           </Select>
-          <div className="flex gap-3">
-            <Input
-              type="text"
-              AlertInvertedColors
-              placeholder="Enter author name"
-              className="w-full"
-              value={authorInput}
-              onChange={(e) => setAuthorInput(e.target.value)}
-            />
-            <Input
-              type="text"
-              AlertInvertedColors
-              placeholder="Enter author surname"
-              className="w-full"
-              value={authorSurnameInput}
-              onChange={(e) => setAuthorSurnameInput(e.target.value)}
-            />
-            <Button onClick={handleAuthorAdd}>Add</Button>
-          </div>
-
-          <div className="flex gap-2">
-            {authors &&
-              authors.map((author, index) => (
-                <div
-                  key={index}
-                  className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
-                >
-                  {`${author.firstName} ${author.lastName}`}
-                  <div
-                    className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
-                    onClick={() => handleAuthorDelete(author)}
-                  >
-                    x
-                  </div>
-                </div>
-              ))}
-          </div>
-          <div className="flex gap-3">
-            <Input
-              type="text"
-              AlertInvertedColors
-              placeholder="Enter tag name"
-              className="w-full"
-              value={tagInput}
-              onChange={(e) => setTagInput(e.target.value)}
-            />
-            <Button onClick={handeTagAdd}>Add</Button>
-          </div>
-          <div className="flex gap-2">
-            {tags &&
-              tags.map((tag, index) => (
-                <div
-                  key={index}
-                  className="rounded-lg p-2 bg-white  w-fit flex gap-2 items-center"
-                >
-                  {tag}
-                  <div
-                    className=" rounded-full w-5 h-5 text-white bg-red-400  flex items-center justify-center p-1 cursor-pointer"
-                    onClick={() => handleTagDelete(tag)}
-                  >
-                    x
-                  </div>
-                </div>
-              ))}
-          </div>
+          <Input type="date" onChange={(e) => setDate(e.target.value)} />
         </div>
       </div>
       <div className="rounded-xl shadow-md bg-slate-200 p-3 flex flex-col gap-4">
@@ -356,4 +223,4 @@ function CreateArticle() {
   );
 }
 
-export default CreateArticle;
+export default CreateEvent;

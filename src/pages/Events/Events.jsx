@@ -1,32 +1,38 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Button from "@mui/joy/Button";
 import { useNavigate } from "react-router-dom";
 import { Table } from "@mui/joy";
-import articlesApi from "./api/inedx";
-function Articles() {
-  const [articles, setArticles] = useState([]);
-  console.log(articles);
+import EventsApi from "./api";
+import { AlertContex } from "../../contex/AlertContex";
+
+function Events() {
+  const { displayAlert } = useContext(AlertContex);
+  const [events, setEvents] = useState([]);
+  console.log(events);
   const navigate = useNavigate();
 
   const getData = async () => {
-    const res = await articlesApi.getArticles();
+    const res = await EventsApi.getAllEvents();
 
-    setArticles(res);
+    setEvents(res);
   };
   useEffect(() => {
     getData();
   }, []);
 
   const handleDelete = async (id) => {
-    const res = await articlesApi.deleteArticleById(id);
-    getData();
+    try {
+      const res = await EventsApi.deleteEventById(id);
+      getData();
+      displayAlert(true, "Event deleted successfully");
+    } catch (error) {
+      displayAlert(false, "Unable to delete event");
+    }
   };
   return (
     <div className="container mx-auto flex flex-col gap-4">
-      <Button onClick={() => navigate("/create-article")}>
-        Create new article
-      </Button>
-      <h1 className="text-[32px] font-bold">Articles</h1>
+      <Button onClick={() => navigate("/create-event")}>Crete new event</Button>
+      <h1 className="text-[32px] font-bold">Event</h1>
       <div className="rounded-xl shadow-lg bg-slate-100  p-3 ">
         <Table>
           <thead>
@@ -40,17 +46,17 @@ function Articles() {
           </thead>
 
           <tbody>
-            {articles?.length > 0 ? (
-              articles.map((article) => (
-                <tr key={article.id}>
-                  <td>{article.id}</td>
-                  <td>{article?.locales[0].title}</td>
-                  <td>{article?.date}</td>
+            {events?.length > 0 ? (
+              events.map((event) => (
+                <tr key={event.id}>
+                  <td>{event.id}</td>
+                  <td>{event?.locales[0].title}</td>
+                  <td>{event?.date}</td>
                   <td>
                     <Button
                       color="warning"
                       onClick={() => {
-                        navigate(`/article/${article.id}`);
+                        navigate(`/event/${event.id}`);
                       }}
                     >
                       Edit
@@ -59,7 +65,7 @@ function Articles() {
                   <td>
                     <Button
                       color="danger"
-                      onClick={() => handleDelete(article.id)}
+                      onClick={() => handleDelete(event.id)}
                     >
                       Delete
                     </Button>
@@ -68,7 +74,7 @@ function Articles() {
               ))
             ) : (
               <tr>
-                <th colSpan={5}>Articles not found</th>
+                <th colSpan={5}>Events not found</th>
               </tr>
             )}
           </tbody>
@@ -78,4 +84,4 @@ function Articles() {
   );
 }
 
-export default Articles;
+export default Events;

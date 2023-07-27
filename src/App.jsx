@@ -13,11 +13,12 @@ import CreateArticle from "./pages/CreateArticle/CreateArticle";
 import Profile from "./pages/Profile/Profile";
 import EditArticle from "./pages/EditArticle/EditArticle";
 import Tags from "./pages/Tags/Tags";
-
+import Event from "./pages/Events/Events";
 import Services from "./pages/services/Services";
 import Gallery from "./pages/Gallery/Gallery";
 import Message from "./pages/Message/Message";
-
+import CreateEvent from "./pages/CreateEvent/CreateEvent";
+import EditEvent from "./pages/EditEvent/EditEvent";
 
 function App() {
   return (
@@ -37,6 +38,9 @@ function App() {
             <Route path="/message" element={<Message />} />
             <Route path="/create-article" element={<CreateArticle />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/event" element={<Event />} />
+            <Route path="event/:id" element={<EditEvent />} />
+            <Route path="/create-event" element={<CreateEvent />} />
           </Route>
         </Route>
         <Route element={<ProectedRoute shouldAuth={false} />}>
