@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   // baseURL : process.env.BASE_URL ,
-  baseURL: "http://localhost:3000",
+  baseURL: `${import.meta.env.VITE_APP_BASE_URL}`,
   withCredentials: true,
 });
 axiosInstance.interceptors.response.use(
@@ -13,7 +13,7 @@ axiosInstance.interceptors.response.use(
     if (error.response.status === 401) {
       try {
         const res = await axios.post(
-          "http://localhost:3000/auth/refresh-tokens",
+          `${import.meta.env.VITE_APP_BASE_URL}/auth/refresh-tokens`,
           {},
           { withCredentials: true } // Send refresh token in request
         );

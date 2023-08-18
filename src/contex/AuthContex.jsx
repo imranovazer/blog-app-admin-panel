@@ -12,7 +12,7 @@ function AuthContexProvider({ children }) {
     const verify = async () => {
       try {
         const res = await axios.post(
-          "http://localhost:3000/auth/echo",
+          `${import.meta.env.VITE_APP_BASE_URL}/auth/echo`,
           {},
           { withCredentials: true }
         );
@@ -26,7 +26,7 @@ function AuthContexProvider({ children }) {
         if (error.response && error.response.status === 401) {
           try {
             const refreshTokenResponse = await axios.post(
-              "http://localhost:3000/auth/refresh-tokens",
+              `${import.meta.env.VITE_APP_BASE_URL}/auth/refresh-tokens`,
               {},
               { withCredentials: true }
             );
