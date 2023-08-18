@@ -13,7 +13,7 @@ import {
 import GalleryModal from "./components/GalleryModal";
 // import Select from "@mui/material";
 
-const Gallery=()=> {
+const Gallery = () => {
   const [gallery, setGallery] = useState([]);
   const [file, setFile] = useState();
   const [open, setOpen] = useState(false);
@@ -105,6 +105,6 @@ const Gallery=()=> {
       />
     </div>
   );
-}
+};
 
 export default Gallery;

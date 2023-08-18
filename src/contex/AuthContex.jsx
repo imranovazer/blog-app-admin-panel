@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { createContext } from "react";
 import axiosInstance from "../axios";
+import axios from "axios";
 export const AuthContex = createContext(null);
 
 function AuthContexProvider({ children }) {
@@ -10,23 +11,46 @@ function AuthContexProvider({ children }) {
   useEffect(() => {
     const verify = async () => {
       try {
-        const res = await axiosInstance.post("/auth/echo");
+        const res = await axios.post(
+          "http://localhost:3000/auth/echo",
+          {},
+          { withCredentials: true }
+        );
+        // console.log(res.data.data);
+
         setIsAuth(true);
         setLoading(false);
+
         return res.data.data;
       } catch (error) {
-        console.log(error);
-        setIsAuth(false);
-        setLoading(false);
+        if (error.response && error.response.status === 401) {
+          try {
+            const refreshTokenResponse = await axios.post(
+              "http://localhost:3000/auth/refresh-tokens",
+              {},
+              { withCredentials: true }
+            );
+            // Assuming your refresh-token endpoint returns a new access token in 'refreshTokenResponse.data.accessToken'
+            // Set the new access token in the request headers for future requests
+
+            setIsAuth(true);
+
+            setLoading(false);
+          } catch (refreshError) {
+            // If token refresh fails or there's another error, logout the user
+
+            setIsAuth(false);
+            setLoading(false);
+            // navigate('/login')
+          }
+        } else {
+          // Handle other errors
+          setIsAuth(false);
+          setLoading(false);
+        }
       }
     };
-
     verify();
-    // if (token) {
-    //   setIsAuth(true);
-    // } else {
-    //   setIsAuth(false);
-    // }
   }, []);
   return (
     <AuthContex.Provider value={{ isAuth, setIsAuth }}>
